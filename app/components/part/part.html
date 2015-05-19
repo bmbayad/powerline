@@ -1,0 +1,109 @@
+﻿
+ test
+ <tpv-filter table="'board'"></tpv-filter>   
+
+ <div id="columnSelectionBar">
+        <div id="special1" >Chose your Columns</div>
+        <div id="columnSelectionBarhidden">
+            <div  id="window">
+                <div id="box" ng-repeat="column in columns1" ng-if="!column.hidden1"><input  type="checkbox" ng-model="column.visible"/>{{column.title}}</div>
+                <div >Group by:
+                    <select style="color: black;"  ng-model="groupby" ng-options="c.title for c in columns1 | filter: {hidden1: false}">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+                
+                <div>
+                  <input class="input-group1" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="dtFrom" is-open="openedFrom"  max-date="'2015-06-22'" datepicker-options="dateOptionsFrom" ng-required="true" close-text="Close" />
+                  <button type="button" class="btn btn-default" ng-click="openFrom($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                  
+                </div>
+                <div>
+                  <input class="input-group1" type="text"  datepicker-popup="dd-MMMM-yyyy" ng-model="dtFrom" is-open="openedFrom"  max-date="'2015-06-22'" datepicker-options="dateOptionsFrom" ng-required="true" close-text="Close" />
+                  <button type="button" class="btn ng-click="openFrom($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                  
+                </div>
+    </div>
+
+    <div>
+        <div class="input-group1">test1</div>
+        <div class="input-group1" >test2</div>
+    </div>
+
+
+    
+
+    <table ng-table="tableParams" template-pagination="custom/pager" show-filter="true" class="table">
+        <thead>
+            <tr>
+                <th ng-repeat="column in columns1" ng-if="column.visible"
+                    class="text-center sortable" ng-class="{
+                      'sort-asc': tableParams.isSortBy(column.title, 'asc'),
+                      'sort-desc': tableParams.isSortBy(column.title, 'desc')
+                    }"
+                    ng-click="tableParams.sorting(column.title, tableParams.isSortBy(column.title, 'asc') ? 'desc' : 'asc')">
+                    {{column.title}}
+                </th>
+            </tr>
+            <tr>
+                <th ng-repeat="column in columns1"
+                    ng-if="column.visible"
+                    class="text-center sortable">
+                    <input type="text" class="form-control"
+                           ng-model="filter_dict[column.title] " />
+                </th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="group in $groups">
+            <tr class="ng-table-group">
+                <td colspan="{{columns1.length}}">
+                    <a href="" ng-click="group.$hideRows = !group.$hideRows">
+                        <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
+                        <strong>{{ group.value }}</strong>
+                    </a>
+                </td>
+            </tr>
+            <tr ng-hide="group.$hideRows" ng-repeat="user in group.data" ng-class="{'emphasis': user.Audit}">
+                <td ng-repeat="column in columns1" ng-if="column.visible">
+                    <span ng-if="!user.$edit">{{user[column.title]}}</span>
+                    <div ng-if="user.$edit"><input class="form-control" ng-model="user[column.title]" /></div>
+
+                </td>
+                <td>
+                    <a ng-if="!user.$edit" href="" class="btn btn-default btn-xs" ng-click="user.$edit = true">Edit</a>
+                    <a ng-if="user.$edit" href="" class="btn btn-primary btn-xs" ng-click="user.$edit = false">Save</a>
+
+                </td>
+            </tr>
+
+
+        </tbody>
+
+    </table>
+
+    <script type="text/ng-template" id="custom/pager">
+        <ul class="pager ng-cloak">
+            <li ng-repeat="page in pages"
+                ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                ng-if="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+            </li>
+            <li>
+                <div class="btn-group">
+                    <button type="button" ng-class="{'active':params.count() == 5}" ng-click="params.count(5)" class="btn btn-default">5</button>
+                    <button type="button" ng-class="{'active':params.count() == 10}" ng-click="params.count(10)" class="btn btn-default">10</button>
+                    <button type="button" ng-class="{'active':params.count() == 20}" ng-click="params.count(20)" class="btn btn-default">20</button>
+                    <button type="button" ng-class="{'active':params.count() == 40}" ng-click="params.count(40)" class="btn btn-default">40</button>
+                    <button type="button" ng-class="{'active':params.count() == 75}" ng-click="params.count(75)" class="btn btn-default">75</button>
+                    <button type="button" ng-class="{'active':params.count() == 100}" ng-click="params.count(100)" class="btn btn-default">100</button>
+                    <button type="button" ng-class="{'active':params.count() == 500}" ng-click="params.count(500)" class="btn btn-default">500</button>
+                </div>
+            </li>
+        </ul>
+    </script>

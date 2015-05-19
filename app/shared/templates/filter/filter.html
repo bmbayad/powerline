@@ -1,0 +1,15 @@
+﻿
+
+
+<div>
+    Part:
+    <!-- will need to standardize the column field from title to text or vice versa-->
+    <select ng-disabled="start" ng-model="selectedPartCol" ng-options="col['text'] for col in filters">
+        <option value="">-- Add Part Filter --</option>
+    </select>
+    <!--<button addfilter ng-disabled="start" ng-click="onClickAddFilter()" ng-model="table" ng-init="table='part'">Add Filter</button>-->
+    <button addfilter ng-disabled="start" ng-click="onClickAddFilter()">Add Filter</button>
+</div>
+<div id="testme"></div>
+<ul><li ng-repeat="cus in filters1">{{cus}}</li></ul>
+
