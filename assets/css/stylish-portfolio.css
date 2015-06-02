@@ -312,3 +312,11 @@ footer {
     margin-left: auto ;
     margin-right: auto ;
 }
+
+.dropdown-menu {
+    width: 500px;
+}
+.dropdown-menu li a {
+    word-wrap: break-word;
+    white-space: normal;
+}

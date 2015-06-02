@@ -1,23 +1,22 @@
 ﻿
- test
- <tpv-filter table="'board'"></tpv-filter>   
 
  <div id="columnSelectionBar">
-        <div id="special1" >Chose your Columns</div>
-        <div id="columnSelectionBarhidden">
-            <div  id="window">
+     <!--<div id="special1" >Chose your Columns</div>-->
+     <a href ng-click="show0 = !show0"><div id="special1" >Chose your Columns</div></a>    
+        <!--<div  id="columnSelectionBarhidden">-->
+            <div ng-show="show0" id="window">
                 <div id="box" ng-repeat="column in columns1" ng-if="!column.hidden1"><input  type="checkbox" ng-model="column.visible"/>{{column.title}}</div>
                 <div >Group by:
                     <select style="color: black;"  ng-model="groupby" ng-options="c.title for c in columns1 | filter: {hidden1: false}">
                         <option value=""></option>
                     </select>
                 </div>
-            </div>
+            <!--</div>-->
         </div>
     </div>
 
-    <div>
-                
+    <!--
+    <div>                
                 <div>
                   <input class="input-group1" type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="dtFrom" is-open="openedFrom"  max-date="'2015-06-22'" datepicker-options="dateOptionsFrom" ng-required="true" close-text="Close" />
                   <button type="button" class="btn btn-default" ng-click="openFrom($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -34,9 +33,16 @@
         <div class="input-group1">test1</div>
         <div class="input-group1" >test2</div>
     </div>
+    -->
+
+ <div id="columnSelectionBar">
+     <a href ng-click="show = !show"><div id="special1" >Set your filters</div></a>    
+     <div ng-show="show" id="window" style="color: black;width: 780px;">
+        <div ng-include="'app/shared/templates/filter/partfilterselection.html'"></div>
+     </div>
+ </div>
 
 
-    
 
     <table ng-table="tableParams" template-pagination="custom/pager" show-filter="true" class="table">
         <thead>
@@ -75,8 +81,9 @@
 
                 </td>
                 <td>
-                    <a ng-if="!user.$edit" href="" class="btn btn-default btn-xs" ng-click="user.$edit = true">Edit</a>
-                    <a ng-if="user.$edit" href="" class="btn btn-primary btn-xs" ng-click="user.$edit = false">Save</a>
+                    <a ng-if="!user.$edit" href="" class="btn btn-default btn-xs" ng-click="user.$edit = true;takeRowSnapshot(user)">Edit</a>
+                    <a ng-if="user.$edit" href="" class="btn btn-primary btn-xs" ng-click="user.$edit = false;recoverRow(user)">Cancel</a>
+                    <a ng-if="user.$edit" href="" class="btn btn-primary btn-xs" ng-click="user.$edit = false;saveRow(user)">Save</a>
 
                 </td>
             </tr>

@@ -1,0 +1,9 @@
+<div>
+<tpv-filter table="'part'"/>
+</div>
+<select  data-ng-model="currentQuery" data-ng-options="query.query for query in queries" ></select>
+<button ng-click="runSavedQuery();">Run Query</button>    <div id="testme"></div>
+    <div>
+    <button ng-click="getFilteredPartData();">Filter Data</button>
+    <button ng-click="saveFilterQuery();">Save Filter</button>
+</div>

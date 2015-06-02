@@ -105,6 +105,72 @@
                 });
         };
 
+        var getQueryData = function (query) {
+            var req = {
+                method: 'POST',
+                url: "http://localhost:26368/api/PowerInformation/query",
+                headers: {
+                    'Content-Type': "application/json",
+                    'dataType': "json"
+                },
+                data: query
+            }
+        return $http(req).success(function (response) { return response.data });
+        };
+
+        
+        var getQueryPartData = function (query) {
+            var req = {
+                method: 'POST',
+                url: "http://localhost:26368/api/PowerInformation/partquery",
+                headers: {
+                    'Content-Type': "application/json",
+                    'dataType': "json"
+                },
+                data: query
+            }
+        return $http(req).success(function (response) { return response.data });
+        };
+
+        var saveFilterQuery = function (query) {
+            var req = {
+                method: 'POST',
+                url: "http://localhost:26368/api/PowerInformation/partsavequery",
+                headers: {
+                    'Content-Type': "application/json",
+                    'dataType': "json"
+                },
+                data: query
+            }
+        return $http(req).success(function (response) { return response.data });
+        };
+
+
+        var GetColumnMinMax = function(table,column){
+                return $http.get("http://localhost:26368/api/PowerInformation/GetColumnMinMax/" + table + "/" + column).then(function (response) {
+                    return response.data;
+                });
+        };
+        
+        var GetSavedFilters = function(){
+                return $http.get("http://localhost:26368/api/PowerInformation/GetSavedFilters").then(function (response) {
+                    return response.data;
+                });
+        };
+
+        var saveRow = function (row) {
+            var req = {
+                method: 'POST',
+                url: "http://localhost:26368/api/PowerInformation/partsaverow",
+                headers: {
+                    'Content-Type': "application/json",
+                    'dataType': "json"
+                },
+                data: row
+            }
+          return $http(req).success(function (response) { return response.data });
+        };
+        
 
         return {
             getData: getData,
@@ -121,7 +187,13 @@
             getPowerDataInformation: getPowerDataInformation,
             getPowerDataInformationbyId: getPowerDataInformationbyId,
             GetColumnValues: GetColumnValues,
-            GetColumnNames: GetColumnNames  
+            GetColumnNames: GetColumnNames ,
+            getQueryData: getQueryData,
+            getQueryPartData: getQueryPartData,
+            GetColumnMinMax: GetColumnMinMax,
+            saveFilterQuery: saveFilterQuery,
+            GetSavedFilters: GetSavedFilters,
+            saveRow : saveRow
           
         };
     };

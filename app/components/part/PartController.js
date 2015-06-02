@@ -2,17 +2,33 @@
 
     var app = angular.module("App");
 
-    var PartController = function ($scope, $filter, linq, gridService, ngTableParams, $rootScope, $window,$location) {
+
+    var PartController = function ($scope, $filter, linq, gridService, ngTableParams, $rootScope, $window, $location) {
 
         var columns = [];
         $scope.columns1 = [];
         $scope.filter_dict = { RecordId: "" };
         $scope.groupby = '-';
+        $scope.filters1 = {}
 
         var data = [];
 
+
+        $scope.onDataQueryComplete = function (responseData) {
+            data = []
+            console.log("onDataQueryComplete scope:", $scope)
+            console.log("onDataQueryComplete responsedata:", responseData);
+            if ($scope.tableParams) {
+                data = responseData.data;
+                $scope.tableParams.reload();
+            }
+
+
+        };
+        
         var onDataComplete = function (responseData) {
-            console.log("mydata");
+
+            console.log("mydata", responseData);
             console.log(responseData.RecordValue);
             $scope.records = responseData;
             data = responseData;
@@ -58,7 +74,7 @@
                 total: data.length, // length of data
                 groupBy: $scope.groupby,
                 getData: function ($defer, params) {
-                    console.log(params.sorting());
+                    //console.log(params.sorting());
                     var filteredData = $scope.filter_dict ? $filter('filter')(data, $scope.filter_dict) : data;
                     var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : filteredData;
 
@@ -71,11 +87,23 @@
 
         };
 
+
+
+       var onTPVError = function (reason) {
+           $scope.error = "could not fetch the user";
+       };
+
+       var onsaveRowComplete = function (responseData) {
+
+       }
+
+
         $scope.$watch("filter_dict", function () {
             if ($scope.filter_dict && $scope.tableParams) {
                 $scope.tableParams.reload();
             }
         }, true);
+
 
         $scope.$watch('groupby', function (value) {
             if (value) {
@@ -102,25 +130,74 @@
             $scope.error = "could not fetch the user";
         };
 
-//** datetimepicker settings **//
+        //** save a row -- user **//
+        $scope.saveRow = function(user){
+            gridService.saveRow(user).then(onsaveRowComplete, onTPVError);
+            /*
+            delete row["$$hashKey"]
+            delete row["$edit"]
+            delete row["_id"]
 
-  $scope.toggleMinFrom = function() {
-    $scope.minDateFrom = $scope.minDateFrom ? null : new Date();
-  };
-  $scope.toggleMinFrom();
+            console.log(typeof (row))
 
-  $scope.openFrom = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
+            console.log("Adding Row: ", row);
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify({ 'RecordValue': row }),
+                url: "http://localhost:26368/api/PowerInformation/saveRow",
+                contentType: "application/json"
+            });*/
 
-    $scope.openedFrom = true;
-  };
+        }
 
-  $scope.dateOptionsFrom = {
-    formatYear: 'yy',
-    startingDay: 1
-  };
-//** datetimepicker settings **//
+
+        var oldRow = {}
+
+        $scope.takeRowSnapshot = function (row) {
+
+            oldRow[row._id] = {};
+            for (key in row) {
+                console.log(key)
+                if (key.substring(0, 1) != '$') {
+                    oldRow[row._id][key] = row[key];
+                }
+            }
+            console.log("old row: ", oldRow[row._id]);
+        }
+
+        $scope.recoverRow = function (row) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i]._id == row._id) {
+                    console.log("Found: ", row._id, oldRow);
+                    console.log("New Row: ", data[i])
+                    for (key in oldRow[row._id]) {
+                        console.log(data[i][key], "--", oldRow[row._id][key]);
+                        data[i][key] = oldRow[row._id][key];
+                    }
+                    oldRow[row._id] = {}
+                }
+            }
+        }
+
+        //** datetimepicker settings **//
+
+        $scope.toggleMinFrom = function () {
+            $scope.minDateFrom = $scope.minDateFrom ? null : new Date();
+        };
+        $scope.toggleMinFrom();
+
+        $scope.openFrom = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.openedFrom = true;
+        };
+
+        $scope.dateOptionsFrom = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+        //** datetimepicker settings **//
 
 
         gridService.getData1().then(onDataComplete, onError);
